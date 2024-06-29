@@ -15,7 +15,7 @@ public class HomeController : Controller
     }
 
     public IActionResult Index(IndexVm vm){
-        return View();
+        return View(wm);
     }
 
     /*[HttpGet]
