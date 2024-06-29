@@ -6,12 +6,12 @@ namespace AzureWebsite.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class PeopleController : ControllerBase
+public class HomeController : ControllerBase
 {
-    private readonly ILogger<PeopleController> logger;
+    private readonly ILogger<HomeController> logger;
     private readonly AOrtmanDB db;
 
-    public PeopleController(ILogger<PeopleController> logger, AOrtmanDB db)
+    public HomeController(ILogger<HomeController> logger, AOrtmanDB db)
     {
         this.logger = logger;
         this.db = db;
