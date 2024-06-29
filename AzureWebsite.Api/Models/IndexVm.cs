@@ -1,4 +1,4 @@
-namespace ChatApp.Models;
+namespace AzureWebsite.Api.Models;
 
 public class IndexVm
 {

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ChatApp.Models;
+namespace AzureWebsite.Api.Models;
 
 public class SignInVm
 {
