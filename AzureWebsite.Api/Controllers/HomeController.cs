@@ -14,16 +14,16 @@ public class HomeController : Controller
         _logger = logger;
     }
 
-    public IActionResult Index(){
+    public IActionResult Index(IndexVm vm){
         return View();
     }
 
-    [HttpGet]
+    /*[HttpGet]
     public IActionResult People(){
 
     }
 
-    /*[HttpPost]
+    [HttpPost]
     public IActionResult People(){
 
     }
