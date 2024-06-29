@@ -18,7 +18,7 @@ public class HomeController : Controller
         return View();
     }
 
-    [HttpGet]
+    /*[HttpGet]
     public IActionResult People(){
 
     }
@@ -26,16 +26,16 @@ public class HomeController : Controller
     [HttpPost]
     public IActionResult People(){
 
-    }
+    }*/
 
     public IActionResult Privacy(){
         return View();
     }
 
-    [ResponceCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    /*[ResponceCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error(){
         return View(new ErrorViewModel { Request = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-    }
+    }*/
 
     /*private readonly ILogger<HomeController> logger;
     private readonly AOrtmanDB db;
