@@ -8,7 +8,7 @@ namespace AzureWebsite.Api.Controllers;
 [Route("[controller]")]
 public class HomeController : ControllerBase
 {
-    private readonly ILogger<HomeController> logger;
+    /*private readonly ILogger<HomeController> logger;
     private readonly AOrtmanDB db;
 
     public HomeController(ILogger<HomeController> logger, AOrtmanDB db)
@@ -22,5 +22,5 @@ public class HomeController : ControllerBase
     {
         var people = await db.People.ToListAsync();
         return people;
-    }
+    }*/
 }
