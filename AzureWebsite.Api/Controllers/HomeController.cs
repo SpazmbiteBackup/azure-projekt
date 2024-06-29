@@ -23,14 +23,14 @@ public class HomeController : Controller
 
     }
 
-    [HttpPost]
+    /*[HttpPost]
     public IActionResult People(){
 
     }
 
     public IActionResult Privacy(){
         return View();
-    }
+    }*/
 
     /*[ResponceCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error(){
