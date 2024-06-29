@@ -18,7 +18,7 @@ public class HomeController : Controller
         return View();
     }
 
-    /*[HttpGet]
+    [HttpGet]
     public IActionResult People(){
 
     }
@@ -26,7 +26,7 @@ public class HomeController : Controller
     [HttpPost]
     public IActionResult People(){
 
-    }*/
+    }
 
     public IActionResult Privacy(){
         return View();
