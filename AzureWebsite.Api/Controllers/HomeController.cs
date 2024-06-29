@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using AzureWebsite.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -6,50 +7,64 @@ namespace AzureWebsite.Api.Controllers;
 
 //[ApiController]
 //[Route("[controller]")]
+
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private const string UserKey = "USER_KEY";
 
-    public HomeController(ILogger<HomeController> logger){
+    public HomeController(ILogger<HomeController> logger)
+    {
         _logger = logger;
     }
 
-    public IActionResult Index(IndexVm vm){
-        return View(wm);
+    public IActionResult Index()
+    {
+        var userName = HttpContext.Session.GetString(UserKey);
+
+        if (string.IsNullOrEmpty(userName))
+        {
+            return RedirectToAction("SignIn");
+        }
+
+        var vm = new IndexVm
+        {
+            UserName = userName
+        };
+        return View(vm);
     }
 
-    /*[HttpGet]
-    public IActionResult People(){
-
-    }
-
-    [HttpPost]
-    public IActionResult People(){
-
-    }
-
-    public IActionResult Privacy(){
+    [HttpGet]
+    public IActionResult SignIn()
+    {
         return View();
-    }*/
-
-    /*[ResponceCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error(){
-        return View(new ErrorViewModel { Request = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-    }*/
-
-    /*private readonly ILogger<HomeController> logger;
-    private readonly AOrtmanDB db;
-
-    public HomeController(ILogger<HomeController> logger, AOrtmanDB db)
+    }
+    
+    [HttpPost]
+    public IActionResult SignIn(SignInVm vm)
     {
-        this.logger = logger;
-        this.db = db;
+        if (!ModelState.IsValid)
+        {
+            return View(vm);
+        }
+
+        SignInUser(vm.UserName);
+        return RedirectToAction("Index");
     }
 
-    [HttpGet(Name = "GetPeople")]
-    public async Task<IEnumerable<Person>> Get()
+    private void SignInUser(string vmUserName)
     {
-        var people = await db.People.ToListAsync();
-        return people;
-    }*/
+        HttpContext.Session.SetString(key:UserKey, value: vmUserName);
+    }
+
+    public IActionResult Privacy()
+    {
+        return View();
+    }
+
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
 }
