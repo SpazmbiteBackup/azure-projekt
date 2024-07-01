@@ -1,0 +1,324 @@
+@model IEnumerable<PasswordManager.Models.PasswordEntry>
+
+@{
+    ViewData["Title"] = "Password Manager";
+    string[] categoryName = ["Others","Social Medias","Mailing Services","Streaming"];
+}
+<style>
+#top_bar{
+    height: 6%;
+    width: 100%;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#content{
+    height: 94%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#pass_list{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    overflow: auto;
+    gap: 1em;
+    align-items: center;
+}
+#pass_list > .element{
+    width: 90%;
+    height: 20%;
+    min-height: 20%;
+    margin: 0.2em;
+    border-radius: 1em;
+    display: flex;
+    align-items: center;
+    gap: 2em;
+}
+#pass_list > .element:hover{
+    background-color: #2066ec;
+    width: 90%;
+    height: 20%;
+    margin: 0.2em;
+    border-radius: 1em;
+}
+#pass_list > .element .image{
+    width: auto;
+    height: 90%;
+    aspect-ratio: 1/1;
+    border-radius: 3em;
+    margin-left: 0.3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 3em;
+    color: rgba(255,255,255,0.5);
+}
+#pass_list > .element .details{
+    display: flex;
+    flex-direction: column;
+
+}
+#pass_list > .element .page_name{
+    font-size: 1.5em;
+}
+#pass_list > .element .page_user{
+    font-size: 0.8em;
+    color: #9eb4db;
+}
+
+
+
+#pass_details{
+    height: 96%;
+    width: 0%;
+    background-color: #181b2c;
+    border-radius: 1em;
+    margin: 2%;
+    visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+}
+
+#pass_details > .image{
+    width: 30%;
+    height: auto;
+    aspect-ratio: 1/1;
+    border-radius: 3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 5em;
+    color: rgba(255,255,255,0.5);
+}
+#pass_details .nameandcat{
+    width: 90%;
+    text-align: center;
+}
+#pass_details .name{
+    font-size: 2em;
+}
+#pass_details .category{
+    font-size: 1.2em;
+}
+#pass_details .edit_name{
+    font-size: 0.8em;
+    color: #9eb4db;
+}
+</style>
+<div id="top_bar">
+    <span>Your Vault</span>
+</div>
+<div id="content">
+    <div id="pass_list">
+        @foreach (var item in Model)
+        {
+            <div class="element" categ="@item.Type" fav="@item.Fav" onclick="openPasswordDetails('@item.URL','@item.Name','@item.User','@item.Password','@categoryName[item.Type]','@item.Fav','@Url.Action("Edit", "Password", new { id = item.Id })','@item.Id')">
+                <div class="image" name="@item.Name"></div>
+                <div class="details">
+                    <span class="page_name">@item.Name@{if(item.Fav == 1){ <i class="fa-solid fa-star"></i> }}</span>
+                    <span class="page_user">@categoryName[item.Type]</span>
+                    <span class="page_user">@item.User</span>
+                </div>
+                
+            </div>
+        }
+        <a href="@Url.Action("Add", "Password")" style="margin-top: 2em;margin-bottom: 2em;">Add New Password</a>
+    </div>
+    <div id="pass_details">
+        <i class="fa-solid fa-xmark" onclick="closePasswordDetails()" style="width: 100%; text-align: right; margin-right: 2em; margin-top: 0.2em; font-size: 1.5em;"></i>
+        <div class="image"></div>
+        <span class="nameandcat"><span class="name"></span><br>
+        <span class="category"></span></span>
+        <div class="pause"></div>
+        <span class="nameandcat"><span class="edit_name">Website</span><br>
+        <span class="website_data"></span>&nbsp;&nbsp;<a class="website_link" href=""><i class="fa-solid fa-link"></i></a></span>
+        <span class="nameandcat"><span class="edit_name">Username</span><br>
+        <span class="user_data"></span></span>
+        <span class="nameandcat"><span class="edit_name">Password</span><br>
+        <span class="pass_data" pass="hide"></span>&nbsp;&nbsp;<a class="pass_show"><i class="fa-solid fa-eye"></i></a></span>
+        <div class="pause"></div>
+        <span><i class="fa-solid fa-pen-to-square"></i>&nbsp;&nbsp;<a class="gotoEdit" href="">Edit</a></span>
+        <!--<span><i class="fa-solid fa-trash-can"></i>&nbsp;&nbsp;<a class="gotoDelete" asp-action="Delete" asp-route-id="" method="post">Delete</a></span>-->
+        <form class="gotoDelete" asp-action="Delete" asp-route-id="" method="post" style="display:inline">
+            <i class="fa-solid fa-trash-can"></i>&nbsp;&nbsp;<button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this item?');">Delete</button>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    
+    function dom(name) {
+        if (document.querySelectorAll(name).length == 1) {
+            return document.querySelectorAll(name)[0];
+        } else {
+            return document.querySelectorAll(name);
+        }
+    }
+    function refreshElements(){
+        var categ = parseInt(urlVar("mode"));
+        for(var e = 0 ; e < dom(".element").length ; e++){
+            var n = dom(".element .image")[e].getAttribute("name");
+            dom(".element .image")[e].style.backgroundColor = n.toColor();
+            dom(".element .image")[e].innerText = n.substring(0,1);
+            if(categ != null && categ > 0 && categ < 5){
+                if((categ-1) != dom(".element")[e].getAttribute("categ")){
+                    dom(".element")[e].style.display = "none";
+                }
+            }
+            if(categ != null && categ == 5){
+                if(dom(".element")[e].getAttribute("fav") != 1){
+                    dom(".element")[e].style.display = "none";
+                }
+            }
+
+        }
+    }
+    function openPasswordDetails(w,n,u,p,c,f,e,i){
+        //window.location.href = i;
+        dom("#pass_list").style.width = "50%";
+        dom("#pass_details").style.width = "46%";
+        
+        dom("#pass_details").style.visibility = "visible";
+        dom("#pass_details .name").innerText = n;
+        dom("#pass_details .category").innerText = c;
+        dom("#pass_details .image").style.backgroundColor = n.toColor();
+        dom("#pass_details .image").innerText = n.substring(0,1);
+        dom("#pass_details .website_data").innerText = w;
+        dom("#pass_details .website_link").target = "_blank";
+        if(w.substring(0,5) == "https" || w.substring(0,4) == "http"){
+            dom("#pass_details .website_link").href = w;
+        } else {
+            dom("#pass_details .website_link").href = "https://"+w;
+        }
+        dom("#pass_details .user_data").innerText = u;
+        dom("#pass_details .pass_data").innerText = p;
+        dom("#pass_details .pass_show").onclick = function(){ showPassword(p,dom("#pass_details .pass_data")); }; 
+        dom("#pass_details .gotoEdit").href = e;
+        dom("#pass_details .gotoDelete").setAttribute('asp-route-id',i);
+        dom("#pass_details .gotoDelete").setAttribute('asp-action','Delete/'+i);
+        dom("#pass_details .gotoDelete").setAttribute('action','/Password/Delete/'+i);
+
+        dom("#pass_details .pass_data").setAttribute("pass","hide");
+        showPassword(p,dom("#pass_details .pass_data"));
+    }
+    
+    function closePasswordDetails(){
+        dom("#pass_details").style.visibility = "hidden";
+    }
+    function showPassword(p,d){
+        var out="";
+        a = d.getAttribute("pass");
+        if(a == "show"){
+            out = p;
+            a = d.setAttribute("pass","hide");
+        } else {
+            for(var c = 0 ; c < p.length ; c++){
+                out += "*";
+            }
+            a = d.setAttribute("pass","show");
+        }
+        d.innerText = out;
+    }
+    String.prototype.toColor = function() {
+        var colors = ["#e51c23", "#e91e63", "#9c27b0", "#673ab7", "#3f51b5", "#5677fc", "#03a9f4", "#00bcd4", "#009688", "#259b24", "#8bc34a", "#afb42b", "#ff9800", "#ff5722", "#795548", "#607d8b"]
+        
+        var hash = 0;
+        if (this.length === 0) return hash;
+        for (var i = 0; i < this.length; i++) {
+            hash = this.charCodeAt(i) + ((hash << 5) - hash);
+            hash = hash & hash;
+        }
+        hash = ((hash % colors.length) + colors.length) % colors.length;
+        return colors[hash];
+    }
+    function getUrlVar() {
+            var fullUrl = window.location.href;
+            if(fullUrl.indexOf("?") >= 0){
+                fullUrl = fullUrl.substring(fullUrl.indexOf("?")+1);
+                var urlArray = fullUrl.split("&");
+                for(var c = 0 ; c < urlArray.length ; c++){
+                    urlArray[c] = urlArray[c].split("=");
+                }
+            } else {
+                var urlArray = [];
+            }
+
+            return urlArray;
+        }
+    function urlVar(str){
+            var urlArray = getUrlVar();
+            var out = "";
+            for(var c = 0 ; c < urlArray.length ; c++){
+                if(urlArray[c][0] == str){
+                    out = urlArray[c][1];
+                    break;
+                }
+            }
+            return out;
+        }
+    refreshElements();
+</script>
+
+<!--<h1>Password List</h1>
+
+<p>
+    <a class="btn btn-primary" href="@Url.Action("Add", "Password")">Add New Password</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>URL</th>
+            <th>User</th>
+            <th>Password</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        @if(item.User == "test"){
+            <tr>
+            <td>@item.Id</td>
+            <td>
+                <a href="@EnsureUrlProtocol(item.URL)" target="_blank" rel="noopener noreferrer">
+                    @item.URL
+                </a>
+            </td>
+            <td>@item.User</td>
+            <td>@item.Password</td>
+            <td>
+                <a class="btn btn-secondary" href="@Url.Action("Edit", "Password", new { id = item.Id })">Edit</a>
+                <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this item?');">Delete</button>
+                </form>
+            </td>
+        </tr>
+        }
+        
+    }
+    </tbody>
+</table>-->
+@functions {
+    public string EnsureUrlProtocol(string url)
+    {
+        if (!url.StartsWith("http://") && !url.StartsWith("https://"))
+        {
+            return "https://" + url;
+        }
+        return url;
+    }
+}
+
