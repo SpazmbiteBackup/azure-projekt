@@ -1,23 +1,43 @@
-
-/*html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
+@media (max-width : 1080px) {
+  #main_body{
+      display: flex;
+      min-width: 100vw;
+      max-width: 100vw;
+      min-height: 100vh;
+      max-height: 100vh;
+      flex-direction: column;
   }
-}
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
+  #left_body{
+      width: 100%;
+      height: fit-content;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      background-color: rgba(30,30,40,0.92);
+      padding: 10px;
+      backdrop-filter: blur(10px);
+      color: white;
+      border-radius: 0;
+      border: none;
+  }
+  #right_body{
+      width: 100%;
+      min-height: 100%;
+      background-color: rgba(5,5,20,0.99);
+      backdrop-filter: blur(10px);
+      color: white;
+      border-radius: 0;
+      border: none;
+  }
 
-html {
-  position: relative;
-  min-height: 100%;
-}
+  #left_body #panel_main, #left_body #categories{
+    display: none;
+  }
 
-body {
-  margin-bottom: 60px;
-}*/
+  #left_body:hover #panel_main, #left_body:hover #categories{
+    display: flex;
+  }
+
+}
